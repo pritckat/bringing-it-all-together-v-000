@@ -48,7 +48,13 @@ class Dog
       WHERE id = ?
     SQL
 
-    DB[:conn].execute(sql, id_num)
+    DB[:conn].execute(sql, id_num).map do |row|
+      self.new_from_db(row)
+    end.first
+  end
+
+  def self.new_from_db(row)
+    new_dog = self.new(id: row[0], name: row[1], breed: row[2])
   end
 
 end
