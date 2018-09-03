@@ -1,7 +1,7 @@
 class Dog
 
   attr_accessor :name, :breed
-  attr_reader :id 
+  attr_reader :id
 
   def initialize(name, breed, id = nil)
     @name = name
@@ -28,5 +28,20 @@ class Dog
 
     DB[:conn].execute(sql, self.name, self.breed)
     @id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
+  end
+
+  def self.create(name, breed)
+    new_dog = self.new(name, breed)
+    new_dog.save
+  end
+
+  def self.find_by_id(id_num)
+    sql = <<-SQL
+      SELECT *
+      FROM dogs
+      WHERE id = ?
+    SQL
+
+    DB[:conn].execute(sql, id_num)
   end
 end
